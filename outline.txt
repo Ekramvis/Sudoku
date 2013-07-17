@@ -1,7 +1,0 @@
-Sudoku Solver
-- given a 3x3 stanard sudoku game, solve the game
--- Create a sudoku game randomly
--- Display a sudoku game (can you ensure the game can always be solved? --> yes if it can be solved according to your own rules)
--- Solve a sudoku game with rules
-
-
