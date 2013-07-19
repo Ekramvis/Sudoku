@@ -2,8 +2,10 @@
 class Board
   attr_accessor :grid
 
-  def initialize
+  def initialize(dupped = false)
     @grid = Array.new(9) { Array.new(9) { nil } } 
+    self.create_puzzle unless dupped 
+    self.shroud_puzzle unless dupped 
   end
 
   def box(num)
@@ -109,22 +111,19 @@ class Board
   end
 
   def create_puzzle
-    solved_puzzle = self.dup
-    
-    until solved_puzzle.complete?
-      solved_puzzle.solve #make sure game was solved before random addition
-      solved_puzzle.add_random_square
-      solved_puzzle.solve #attempt to solve game after random addition
+    until self.complete?
+      self.solve #make sure game was solved before random addition
+      self.add_random_square
+      self.solve #attempt to solve game after random addition
     end
-
-    solved_puzzle
+    self.display
   end
 
   def shroud_puzzle
-    p self.open_spots.size
     change_counter = 0
     while self.open_spots.size < 60
       p self.open_spots.size
+      last_change = self.open_spots.size
       closed = self.closed_spots.sample
       x = closed[0]
       y = closed[1]
@@ -135,7 +134,8 @@ class Board
         @grid[x][y] = spot 
         change_counter += 1
       end
-      break if change_counter > 50
+      change_counter = 0 if self.open_spots.size != last_change
+      break if change_counter > 50 
     end
   end
 
@@ -145,7 +145,7 @@ class Board
   end
 
   def dup
-    new_board = Board.new
+    new_board = Board.new(true)
 
     new_board.grid = Array.new(9) { Array.new(9) { nil } } 
     @grid.each_with_index do |row, x|
